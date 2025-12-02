@@ -120,27 +120,54 @@ export default async function Page() {
 
                         {/* 🚀 START: Custom Logic for Module 2 */}
                         {isModuleTwo ? (
-                          <a
-                            href="https://drive.google.com/file/d/1qYizWOJ02DKDYAFDlzAfA1Rcg7W2LFnR/view?usp=sharing"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/40 transition-all duration-200"
-                          >
-                            <span>Problem Statement</span>
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                          <div className="flex items-center gap-3">
+                            {/* Problem Statement Button (Orange) */}
+                            <a
+                              href="https://drive.google.com/file/d/1qYizWOJ02DKDYAFDlzAfA1Rcg7W2LFnR/view?usp=sharing"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/40 transition-all duration-200"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 5l7 7-7 7"
-                              />
-                            </svg>
-                          </a>
+                              <span>Problem Statement</span>
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            </a>
+                            
+                            {/* Submit Assignment Button (Blue - uses standard submission link) */}
+                            <a
+                              href={w.submission_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all duration-200"
+                            >
+                              <span>Submit Assignment</span>
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            </a>
+                          </div>
+
                         ) : (
                           /* * 🚀 END: Custom Logic for Module 2 
                            * START: Standard Logic for all other Modules (1, 3, 4, 5...) 
