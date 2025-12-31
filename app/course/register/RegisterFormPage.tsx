@@ -1,26 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Add this import
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
-export default function RegisterFormPage() {
+interface ExistingData {
+  full_name?: string;
+  institution?: string;
+  current_year?: string;
+  course?: string;
+  branch?: string;
+  phone_number?: string;
+  registered_course_id?: string;
+}
+
+interface RegisterFormPageProps {
+  existingData?: ExistingData | null;
+}
+
+export default function RegisterFormPage({ existingData }: RegisterFormPageProps) {
+  const isEditing = !!existingData?.registered_course_id;
+  
   const [formData, setFormData] = useState({
-    full_name: "",
-    institution: "",
-    current_year: "",
+    full_name: existingData?.full_name || "",
+    institution: existingData?.institution || "",
+    current_year: existingData?.current_year || "",
     current_year_other: "",
-    course: "",
+    course: existingData?.course || "",
     course_other: "",
-    branch: "",
+    branch: existingData?.branch || "",
     branch_other: "",
-    phone_number: "",
+    phone_number: existingData?.phone_number || "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<string>("");
-  const router = useRouter(); // Add router hook
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,15 +86,18 @@ export default function RegisterFormPage() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          course_id: "vc-course-iit-bhu-2025",
-        }),
+        body: JSON.stringify(submissionData),
       });
 
       const data = await res.json();
       if (res.ok) {
         setIsSuccess(true);
+        // If editing, redirect back to course after short delay
+        if (isEditing) {
+          setTimeout(() => {
+            router.push("/course");
+          }, 2000);
+        }
       } else {
         setErrors(
           "Registration failed: " + (data?.error || "Unknown error occurred")
@@ -108,11 +126,9 @@ export default function RegisterFormPage() {
     if (errors) setErrors("");
   };
 
-  // Add handler for WhatsApp link click
   const handleWhatsAppClick = () => {
-    // Small delay to ensure WhatsApp opens before redirect
     setTimeout(() => {
-      router.push("/course"); // Update with your actual course page path
+      router.push("/course");
     }, 500);
   };
 
@@ -122,27 +138,35 @@ export default function RegisterFormPage() {
         {isSuccess ? (
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">
-              Registration Successful!
+              {isEditing ? "Profile Updated Successfully!" : "Registration Successful!"}
             </h1>
-            <p className="mb-6">
-              Welcome! Please join the official WhatsApp group to get all the
-              updates and course materials.
-            </p>
-            <a
-              href="https://chat.whatsapp.com/FKpfFAEdb001JPVIeDh1J0?mode=wwt"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={handleWhatsAppClick} // Add onClick handler
-            >
-              <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
-                Join Now (WhatsApp)
-              </Button>
-            </a>
+            {isEditing ? (
+              <p className="mb-6">
+                Your profile has been updated. Redirecting you back to the course...
+              </p>
+            ) : (
+              <>
+                <p className="mb-6">
+                  Welcome! Please join the official WhatsApp group to get all the
+                  updates and course materials.
+                </p>
+                <a
+                  href="https://chat.whatsapp.com/FKpfFAEdb001JPVIeDh1J0?mode=wwt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleWhatsAppClick}
+                >
+                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
+                    Join Now (WhatsApp)
+                  </Button>
+                </a>
+              </>
+            )}
           </div>
         ) : (
           <>
             <h1 className="text-3xl text-cyan-200 font-bold mb-6 text-center pb-2">
-              Course Registration
+              {isEditing ? "Update Profile" : "Course Registration"}
             </h1>
 
             {errors && (
@@ -193,10 +217,9 @@ export default function RegisterFormPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-border rounded bg-background"
                 >
-                  <option value="" disabled hidden>
+                  <option value="" disabled>
                     Select Year
                   </option>
-
                   <option className="text-black" value="1st Year">
                     1st Year
                   </option>
@@ -249,7 +272,7 @@ export default function RegisterFormPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-border rounded bg-background"
                 >
-                  <option value="" disabled hidden>
+                  <option value="" disabled>
                     Select Course
                   </option>
                   <option className="text-black" value="B.Tech">
@@ -319,7 +342,7 @@ export default function RegisterFormPage() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-border rounded bg-background"
                 >
-                  <option value="" disabled hidden>
+                  <option value="" disabled>
                     Select Branch
                   </option>
                   <option
@@ -434,7 +457,10 @@ export default function RegisterFormPage() {
                   size="lg"
                   className="w-full max-w-sm"
                 >
-                  {submitting ? "Registering..." : "Complete Registration"}
+                  {submitting 
+                    ? (isEditing ? "Updating..." : "Registering...") 
+                    : (isEditing ? "Update Profile" : "Complete Registration")
+                  }
                 </Button>
               </div>
             </form>
