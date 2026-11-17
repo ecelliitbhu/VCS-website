@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { MdArrowOutward } from "react-icons/md";
 import { auth } from "@/auth";
-import { headers } from "next/headers";
+import { getUserStatus } from "@/lib/signup";
 import HomeClient from "./HomeClient";
 
 // const courses = [
@@ -88,34 +88,7 @@ const courseRoadmap = [
 
 export default async function Home() {
   const session = await auth();
-  let status: "no-session" | "unregistered" | "registered" = "no-session";
-
-  if (session?.user?.email) {
-    try {
-      const headerList = await headers();
-      const host =
-        headerList.get("x-forwarded-host") ||
-        headerList.get("host") ||
-        "localhost:3000";
-
-      const protocol =
-        headerList.get("x-forwarded-proto") ||
-        (process.env.NODE_ENV === "production" ? "https" : "http");
-
-      const baseUrl = `${protocol}://${host}`;
-
-      const req = await fetch(`${baseUrl}/api/user/${session.user.email}`, {
-        cache: "no-store",
-      });
-
-      if (req.ok) {
-        const res = await req.json();
-        status = res?.registered_course_id ? "registered" : "unregistered";
-      }
-    } catch (err) {
-      console.error("Landing page status error:", err);
-    }
-  }
+  const status = await getUserStatus(session?.user?.email);
 
   return (
     <div className="w-full">

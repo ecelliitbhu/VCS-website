@@ -1,11 +1,17 @@
 import { auth } from "@/auth";
-import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { getUserStatus } from "@/lib/signup";
 import React from "react";
 
 export default async function Page() {
   const session = await auth();
   if (!session || !session.user)
     return <div className="p-8">Login required</div>;
+
+  // Outdated or missing signup → must (re)fill the registration form first
+  if ((await getUserStatus(session.user.email)) !== "registered") {
+    redirect("/course/register");
+  }
 
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
 

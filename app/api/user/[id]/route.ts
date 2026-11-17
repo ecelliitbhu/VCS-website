@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { isSignupCurrent } from "@/lib/signup";
 
 interface Params {
   id: string;
@@ -20,7 +21,7 @@ export async function GET(
   // id is email in this route; look up user profile data
   const { data: userData, error: userError } = await supabase
     .from("users")
-    .select("full_name, institution, current_year, course, branch, phone_number")
+    .select("full_name, institution, current_year, course, branch, phone_number, signup_version")
     .eq("email", id)
     .maybeSingle();
 
@@ -48,5 +49,8 @@ export async function GET(
     branch: userData?.branch ?? null,
     phone_number: userData?.phone_number ?? null,
     registered_course_id: registrationData?.course_id ?? null,
+    signup_version: userData?.signup_version ?? 0,
+    needs_signup:
+      !registrationData?.course_id || !isSignupCurrent(userData?.signup_version),
   });
 }

@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { CURRENT_SIGNUP_VERSION } from "@/lib/signup";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -60,6 +61,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       course,
       branch,
       phone_number,
+      // always from the server constant, never from the request body
+      signup_version: CURRENT_SIGNUP_VERSION,
     })
     .eq("email", session.user.email);
 
