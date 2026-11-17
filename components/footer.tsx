@@ -6,9 +6,9 @@ import { FaDiscord } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="relative bg-gradient-to-b from-[#632c2d]/90 to-[#1e293b]/95 backdrop-blur-sm border-t border-[#F86531]/20 py-12 px-4 md:px-8">
+    <footer className="relative border-t border-white/15 bg-gradient-to-b from-[#17293a]/40 via-[#132a3f]/58 to-[#101b2a]/78 px-4 py-12 md:px-8">
       {/* Subtle ambient glow */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#F86531]/10 via-[#C42F35]/10 to-[#13324F]/5 pointer-events-none"></div>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-orange-200/[0.08] via-transparent to-[#0b1725]/15" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Main Footer Content */}
@@ -68,11 +68,14 @@ const Footer = () => {
             <h5 className="text-xl font-bold bg-gradient-to-r from-[#F86531] to-[#C42F35] bg-clip-text text-transparent mb-6">
               Stay Updated
             </h5>
-            <iframe
-              src="https://ecelliitbhu.substack.com/embed"
-              className="w-full h-[190px] rounded-lg border border-[#F86531]/25 bg-[#0d2035]/60 backdrop-blur-sm shadow-lg shadow-[#F86531]/8"
-              scrolling="no"
-            />
+            <div className="isolate overflow-hidden rounded-lg border border-slate-300/20 bg-[#172b3d]/90">
+              <iframe
+                src="https://ecelliitbhu.substack.com/embed"
+                title="E-Cell IIT (BHU) newsletter subscription"
+                className="h-[190px] w-full [filter:invert(1)_hue-rotate(180deg)]"
+                scrolling="no"
+              />
+            </div>
           </div>
         </div>
 
