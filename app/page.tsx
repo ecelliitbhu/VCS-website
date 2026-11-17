@@ -151,7 +151,7 @@ export default async function Home() {
             </div>
 
             <div>
-              <Card className="rounded-2xl bg-[#0d1d2d]/75 backdrop-blur-md p-6 md:p-8 border-white/10 shadow-[0_12px_40px_rgba(8,21,34,0.18)]">
+              <Card className="rounded-2xl border border-orange-100/20 bg-gradient-to-br from-[#713f32]/75 via-[#573641]/70 to-[#29364a]/78 p-6 shadow-[0_12px_40px_rgba(36,20,22,0.25)] backdrop-blur-xl md:p-8">
                 <CardHeader className="p-0 mb-4">
                   <CardTitle className="text-lg md:text-xl font-bold">
                     Why VC Scout?
@@ -183,7 +183,7 @@ export default async function Home() {
 
       <section
         aria-labelledby="course-roadmap-heading"
-        className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-16"
+        className="mx-auto w-full max-w-6xl px-4 pt-10 pb-6 md:px-6 md:pt-16 md:pb-8"
       >
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-white/15 pb-5">
           <div>
@@ -204,11 +204,11 @@ export default async function Home() {
           {courseRoadmap.map((module) => (
             <li
               key={module.module}
-              className="relative overflow-hidden rounded-2xl border border-white/12 bg-[#241f2a]/80 p-5 shadow-[0_16px_40px_rgba(30,10,20,0.16)] backdrop-blur-sm sm:p-6"
+              className="relative overflow-hidden rounded-2xl border border-orange-100/25 bg-gradient-to-br from-[#713f32]/80 via-[#573641]/78 to-[#29364a]/82 p-5 shadow-[0_16px_40px_rgba(36,20,22,0.28)] backdrop-blur-xl sm:p-6"
             >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-[#F86531]/70 via-[#C42F35]/50 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-orange-300/80 via-rose-300/45 to-transparent" />
               <div className="mb-4 flex items-start gap-4">
-                <span className="font-mono text-sm font-semibold tracking-widest text-[#ff865c]">
+                <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full border border-orange-200/25 bg-orange-300/10 px-2 font-mono text-xs font-semibold tracking-wider text-orange-100">
                   {module.module}
                 </span>
                 <div>
@@ -243,35 +243,43 @@ export default async function Home() {
       </section>
 
       {/* Partners Section */}
-      <section className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8 pb-40 md:pb-40">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-white drop-shadow-md border-b-2 border-[#F86531]/60 pb-4 inline-block">
-          Our Partners
-        </h2>
+      <section className="mx-auto max-w-6xl px-4 pt-2 pb-24 md:px-6 md:pt-4 md:pb-28">
+        <div className="mb-8 flex items-end justify-between gap-4 border-b border-white/20 pb-5">
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-orange-200">
+              In good company
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Our Partners
+            </h2>
+          </div>
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-8 md:gap-10 mt-8">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-6">
           {partners.map((partner) => (
             <Card
               key={partner.id}
-              className="bg-zinc-900/80 backdrop-blur-md p-6 md:p-7 transition-all duration-300 group hover:shadow-lg hover:shadow-[#F86531]/15"
+              className="group flex min-h-36 items-center gap-5 rounded-2xl border-white/20 bg-[#10283d]/60 p-5 shadow-[0_16px_40px_rgba(7,18,31,0.2)] backdrop-blur-xl transition-colors hover:border-orange-200/40 hover:bg-[#10283d]/75 sm:gap-7 sm:p-6"
             >
-              <CardContent className="p-0 flex flex-col items-center text-center space-y-4">
-                {/* Logo Container */}
-                <div className="w-full h-32 flex items-center justify-center bg-white rounded-lg border border-zinc-700/50 group-hover:border-[#F86531]/30 transition-all duration-300 backdrop-blur-sm">
+              <CardContent className="flex w-full items-center gap-5 p-0 sm:gap-7">
+                <div className="flex h-20 w-36 shrink-0 items-center justify-center rounded-xl border border-orange-100/60 bg-[#ead3b7] px-4 py-3 shadow-inner shadow-[#713f32]/10 sm:h-24 sm:w-44 sm:px-5">
                   <Image
                     src={`/${partner.logo}`}
                     alt={`${partner.name} logo`}
-                    width={200}
-                    height={80}
-                    className="object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300"
+                    width={180}
+                    height={76}
+                    className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.04]"
                   />
                 </div>
-
-                {/* Partner Name */}
-                <h3
-                  className="text-xl font-bold bg-gradient-to-r from-[#F86531] via-[#e05a2c] to-[#C42F35] bg-clip-text text-transparent transition-all duration-300"
-                >
-                  {partner.name}
-                </h3>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-200/80">
+                    E-Summit &apos;27
+                  </p>
+                  <h3 className="mt-1 text-xl font-semibold text-white sm:text-2xl">
+                    {partner.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-300/80">Our partner</p>
+                </div>
               </CardContent>
             </Card>
           ))}

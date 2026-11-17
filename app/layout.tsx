@@ -26,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body 
                 className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-transparent text-white`}
             >
+                <div className="site-background" aria-hidden="true" />
                 <Header />
                 <main className="flex-1 flex flex-col w-full">
                     {children}
