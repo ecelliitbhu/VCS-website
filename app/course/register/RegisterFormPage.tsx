@@ -12,6 +12,7 @@ interface ExistingData {
   branch?: string;
   phone_number?: string;
   registered_course_id?: string;
+  needs_signup?: boolean;
 }
 
 interface RegisterFormPageProps {
@@ -20,7 +21,9 @@ interface RegisterFormPageProps {
 
 export default function RegisterFormPage({ existingData }: RegisterFormPageProps) {
   const isEditing = !!existingData?.registered_course_id;
-  
+  // Registered earlier, but on an older version of the signup form
+  const needsReconfirm = isEditing && !!existingData?.needs_signup;
+
   const [formData, setFormData] = useState({
     full_name: existingData?.full_name || "",
     institution: existingData?.institution || "",
@@ -168,6 +171,13 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
             <h1 className="text-3xl text-cyan-200 font-bold mb-6 text-center pb-2">
               {isEditing ? "Update Profile" : "Course Registration"}
             </h1>
+
+            {needsReconfirm && (
+              <div className="mb-4 p-3 border border-cyan-500/40 bg-cyan-500/10 text-cyan-100 rounded text-sm">
+                We&apos;ve updated our signup form. Please review your details
+                and submit to continue to the course.
+              </div>
+            )}
 
             {errors && (
               <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
