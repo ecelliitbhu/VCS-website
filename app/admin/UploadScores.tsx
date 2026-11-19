@@ -16,7 +16,7 @@ export default function UploadScores() {
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data, { type: "array" });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json<any>(sheet); // [{ email, week, score }, ...]
+      const rows = XLSX.utils.sheet_to_json<any>(sheet); // [{ email, assessment, score }, ...]
 
       const res = await fetch("/api/admin/upload-scores", {
         method: "POST",
@@ -41,7 +41,7 @@ export default function UploadScores() {
 
   return (
     <div className="mb-4 flex items-center gap-3">
-      <label className="text-sm font-semibold">Upload scores (Excel,csv,numbers):</label>
+      <label className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[#94A3B8]">Upload scores (columns: email, assessment, score):</label>
       <input
         type="file"
         accept=".xlsx,.xls,.csv,.numbers"
@@ -49,7 +49,7 @@ export default function UploadScores() {
         disabled={loading}
         className="text-sm"
       />
-      {loading && <span className="text-xs text-gray-400">Processing...</span>}
+      {loading && <span className="font-mono text-xs text-[#94A3B8]">Processing...</span>}
     </div>
   );
 }

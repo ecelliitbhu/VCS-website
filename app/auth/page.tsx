@@ -1,22 +1,26 @@
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
+import { getActiveCohort } from "@/lib/cohort";
 import { Button } from "@/components/ui/button";
 
 export default async function Auth() {
   const session = await auth();
   if (session) redirect("/course");
+  const cohort = await getActiveCohort();
+  const open = !!cohort?.registration_open;
 
   return (
-    <main className="w-full min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-sm bg-slate-900/80 backdrop-blur-md p-6 rounded-2xl border border-slate-800 shadow-lg text-white space-y-4">
-        
-        <h2 className="text-3xl font-bold text-center">
-          Sign In
-        </h2>
+    <div className="flex w-full flex-1 items-center justify-center px-4 pb-20 pt-12">
+      <div className="scout-panel scout-panel--static scout-rise w-full max-w-sm space-y-6 p-8 text-center">
+        <div className="space-y-2">
+          <p className="scout-eyebrow scout-eyebrow--plain justify-center">VC Scout 2026</p>
+          <h1 className="scout-heading text-4xl">Sign in</h1>
+        </div>
 
-        <p className="text-center text-slate-300 text-sm">
-          New registrations are currently closed. <br />
-          Existing users can sign in below.
+        <p className="text-sm leading-relaxed text-white/60">
+          {open
+            ? "Sign in with Google to register for VC Scout 2026."
+            : <>New registrations are currently closed. <br />Existing users can sign in below.</>}
         </p>
 
         <form
@@ -29,8 +33,7 @@ export default async function Auth() {
             Sign in with Google
           </Button>
         </form>
-
       </div>
-    </main>
+    </div>
   );
 }

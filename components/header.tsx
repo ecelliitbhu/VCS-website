@@ -1,199 +1,32 @@
-// // import { auth, signOut } from "@/auth";
-// // import Link from "next/link";
-// // import Image from "next/image";
-
-// // export default async function Header() {
-// //   const session = await auth();
-
-// //   return (
-// //     <header className="w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 backdrop-blur-md text-white border-b border-cyan-400/30 shadow-[0_2px_10px_rgba(0,0,30,0.4)] z-50">
-// //       <div className="max-w-6xl mx-auto flex justify-between items-center py-0 px-6">
-// //         {/* Logo */}
-// //         {/* <Link
-// //       href="/"
-// //       className="text-3xl font-bold bg-gradient-to-r from-blue-300 via-cyan-400 to-yellow-300 bg-clip-text text-transparent hover:from-blue-400 hover:to-cyan-300 transition-all duration-300"
-// //     >
-// //       E-Cell IIT BHU
-// //     </Link> */}
-
-// //         <Link href="/" className="inline-flex items-center">
-// //           <Image
-// //             src="/ecell-logo-noBG-WHITE.png" // put your logo inside /public folder
-// //             alt="E-Cell IIT BHU"
-// //             width={150} // adjust as needed
-// //             height={10}
-// //             className="object-contain"
-// //           />
-// //         </Link>
-
-       
-
-// //         {/* Navigation */}
-// //         <nav className="flex gap-6 text-sm font-medium items-center">
-// //           <Link
-// //             href="/course"
-// //             className="px-4 py-2 rounded-full bg-slate-800/60 border border-slate-700/50 hover:bg-slate-700/70 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300 shadow-sm hover:shadow-cyan-500/20"
-// //           >
-// //             Course
-// //           </Link>
-
-// //           {session &&
-// //             session.user &&
-// //             (session.user as any).role === "admin" && (
-// //               <Link
-// //                 href="/admin"
-// //                 className="px-4 py-2 rounded-full bg-slate-800/60 border border-slate-700/50 hover:bg-slate-700/70 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300 shadow-sm hover:shadow-cyan-500/20"
-// //               >
-// //                 Admin
-// //               </Link>
-// //             )}
-
-// //           {session && session.user ? (
-// //             <form
-// //               action={async () => {
-// //                 "use server";
-// //                 await signOut();
-// //               }}
-// //             >
-// //               <button
-// //                 type="submit"
-// //                 className="px-5 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-cyan-500/40 hover:scale-[1.03] active:scale-[0.97]"
-// //               >
-// //                 Sign Out
-// //               </button>
-// //             </form>
-// //           ) : (
-// //             <Link
-// //               href="/auth"
-// //               className="px-5 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-cyan-500/40 hover:scale-[1.03] active:scale-[0.97]"
-// //             >
-// //               Register
-// //             </Link>
-// //           )}
-// //         </nav>
-// //       </div>
-// //     </header>
-// //   );
-// // }
-// import { auth, signOut } from "@/auth";
-// import Link from "next/link";
-// import Image from "next/image";
-
-// export default async function Header() {
-//   const session = await auth();
-
-//   return (
-//     <header className="w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 backdrop-blur-md text-white border-b border-cyan-400/30 shadow-[0_2px_10px_rgba(0,0,30,0.4)] z-50">
-//       <div className="max-w-6xl mx-auto flex justify-between items-center py-4 px-6">
-//         {/* Logo */}
-//         <Link href="/" className="inline-flex items-center h-10">
-//           <Image
-//             src="/ecell-logo-noBG-WHITE.png"
-//             alt="E-Cell IIT BHU"
-//             width={100}
-//             height={60}
-//             className="object-contain h-full w-auto"
-//           />
-//         </Link>
-
-//         {/* Navigation */}
-//         <nav className="flex gap-6 text-sm font-medium items-center">
-//           <Link
-//             href="/course"
-//             className="px-4 py-2 rounded-full bg-slate-800/60 border border-slate-700/50 hover:bg-slate-700/70 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300 shadow-sm hover:shadow-cyan-500/20"
-//           >
-//             Course
-//           </Link>
-
-//           {session &&
-//             session.user &&
-//             (session.user as any).role === "admin" && (
-//               <Link
-//                 href="/admin"
-//                 className="px-4 py-2 rounded-full bg-slate-800/60 border border-slate-700/50 hover:bg-slate-700/70 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300 shadow-sm hover:shadow-cyan-500/20"
-//               >
-//                 Admin
-//               </Link>
-//             )}
-
-//           {session && session.user ? (
-//             <form
-//               action={async () => {
-//                 "use server";
-//                 await signOut();
-//               }}
-//             >
-//               <button
-//                 type="submit"
-//                 className="px-5 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-cyan-500/40 hover:scale-[1.03] active:scale-[0.97]"
-//               >
-//                 Sign Out
-//               </button>
-//             </form>
-//           ) : (
-//             <Link
-//               href="/auth"
-//               className="px-5 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:from-cyan-400 hover:to-blue-500 transition-all duration-300 shadow-lg hover:shadow-cyan-500/40 hover:scale-[1.03] active:scale-[0.97]"
-//             >
-//               Register
-//             </Link>
-//           )}
-//         </nav>
-//       </div>
-//     </header>
-//   );
-// }
-
 import { auth, signOut } from "@/auth";
 import Link from "next/link";
-import Image from "next/image";
 import ProfileDropdown from "./ProfileDropdown";
+import Image from "next/image";
 
 export default async function Header() {
   const session = await auth();
+  const isAdmin = !!session?.user && (session.user as any).role === "admin";
 
   return (
-    <header className="w-full bg-transparent backdrop-blur-sm text-white border-b border-white/10 z-50">
-      {/* Brand accent bar — orange → crimson → navy */}
-      <div className="h-[3px] w-full bg-gradient-to-r from-[#F86531] via-[#C42F35] to-[#13324F]" />
-
-      <div className="max-w-6xl mx-auto flex justify-between items-center py-0 px-6">
-        {/* E-Summit '27 logo */}
-        <Link
-          href="/"
-          aria-label="E-Summit '27: Dawn of the Defiant home"
-          className="relative inline-flex items-center h-20 before:absolute before:-inset-x-5 before:inset-y-1 before:bg-[radial-gradient(ellipse_at_center,rgba(19,50,79,0.48)_0%,rgba(19,50,79,0.18)_48%,transparent_78%)] before:blur-md before:content-['']"
-        >
+    <header className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#091522]/70 backdrop-blur-md">
+      <div className="mx-auto flex h-[76px] max-w-6xl items-center justify-between gap-4 px-4 md:px-6">
+        <Link href="/" aria-label="IIT BHU E-Summit '27 home" className="shrink-0">
           <Image
             src="/esummit-logo.webp"
-            alt="IIT BHU's E-Summit '27 — Dawn of the Defiant"
-            width={180}
-            height={66}
-            sizes="180px"
-            className="relative z-10 object-contain h-16 w-auto drop-shadow-[0_1px_5px_rgba(8,21,34,0.55)]"
+            alt="IIT BHU E-Summit '27"
+            width={200}
+            height={74}
+            sizes="200px"
+            className="h-12 w-auto sm:h-14"
             priority
           />
         </Link>
 
-        {/* Navigation */}
-        <nav className="flex gap-6 text-sm font-medium items-center">
-          <Link
-            href="/course"
-            className="px-4 py-2 rounded-full bg-[#13324F]/60 border border-[#F86531]/30 hover:bg-[#F86531]/15 hover:border-[#F86531]/60 hover:text-[#F86531] transition-all duration-300 shadow-sm hover:shadow-[#F86531]/20"
-          >
-            Course
-          </Link>
-
-          {session &&
-            session.user &&
-            (session.user as any).role === "admin" && (
-              <Link
-                href="/admin"
-                className="px-4 py-2 rounded-full bg-[#13324F]/60 border border-[#F86531]/30 hover:bg-[#F86531]/15 hover:border-[#F86531]/60 hover:text-[#F86531] transition-all duration-300 shadow-sm hover:shadow-[#F86531]/20"
-              >
-                Admin
-              </Link>
-            )}
+        <nav className="flex items-center gap-5 sm:gap-7">
+          <Link href="/course" className="scout-link">Course</Link>
+          {isAdmin && (
+            <Link href="/admin" className="scout-link">Admin</Link>
+          )}
 
           {session && session.user ? (
             <ProfileDropdown
@@ -206,13 +39,15 @@ export default async function Header() {
           ) : (
             <Link
               href="/auth"
-              className="px-5 py-2 rounded-full bg-gradient-to-r from-[#F86531] to-[#C42F35] text-white font-semibold hover:from-[#ff7340] hover:to-[#d93a40] transition-all duration-300 shadow-lg shadow-[#F86531]/30 hover:shadow-[#F86531]/50 hover:scale-[1.03] active:scale-[0.97]"
+              className="group inline-flex h-9 items-center gap-2 rounded-[3px] bg-[#F86531] px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#ff7340] hover:shadow-[0_0_24px_rgba(248,101,49,0.45)] active:scale-[0.97]"
             >
               Register
+              <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5">&rarr;</span>
             </Link>
           )}
         </nav>
       </div>
+      <div className="scout-rule" aria-hidden="true" />
     </header>
   );
 }

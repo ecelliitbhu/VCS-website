@@ -17,7 +17,7 @@ export default function RegisterButton({ status }: RegisterButtonProps) {
     if (status === "registered") {
         return (
             <a href="/course/registered">
-                <Button size="lg" className="bg-green-500 text-white rounded-full px-8">
+                <Button size="lg" className="border border-white/20 bg-[#13324F] px-8 text-white hover:border-white/40 hover:bg-[#1a4166]">
                     SUBMIT ASSIGNMENT
                 </Button>
             </a>

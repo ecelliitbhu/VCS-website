@@ -45,14 +45,14 @@ export default function ProfileDropdown({ user, signOutAction }: ProfileDropdown
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-full hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#F86531]/50"
+        className="flex items-center gap-2 rounded-[3px] hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#F86531]/50"
       >
-        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#F86531] to-[#C42F35] border-2 border-[#F86531]/40 flex items-center justify-center text-white text-sm font-semibold">
+        <div className="h-9 w-9 rounded-[3px] bg-[#13324F] border border-[#F86531]/60 font-mono flex items-center justify-center text-white text-sm font-semibold">
           {user.image ? (
             <img
               src={user.image}
               alt={user.name || ""}
-              className="h-full w-full rounded-full object-cover"
+              className="h-full w-full rounded-[2px] object-cover"
             />
           ) : (
             initials
@@ -62,9 +62,9 @@ export default function ProfileDropdown({ user, signOutAction }: ProfileDropdown
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-[#0d2035]/95 backdrop-blur-md border border-[#F86531]/30 rounded-lg shadow-lg shadow-[#F86531]/10 z-50">
+        <div className="absolute right-0 mt-2 w-56 bg-[#0D2136]/95 backdrop-blur-md border border-white/[0.12] rounded-[2px] shadow-xl shadow-black/40 z-50">
           {/* User Info */}
-          <div className="px-4 py-3 border-b border-[#F86531]/20">
+          <div className="px-4 py-3 border-b border-white/[0.08]">
             <p className="text-sm font-medium text-white leading-none mb-1">
               {user.name}
             </p>
@@ -97,7 +97,7 @@ export default function ProfileDropdown({ user, signOutAction }: ProfileDropdown
               <span>Update Profile</span>
             </Link>
 
-            <div className="border-t border-[#F86531]/20 my-1"></div>
+            <div className="border-t border-white/[0.08] my-1"></div>
 
             <button
               onClick={() => {

@@ -38,7 +38,7 @@ export default function DeleteUser({ email }: Props) {
     };
 
     return (
-        <button onClick={handleDelete} disabled={loading} className="px-2 py-1 rounded border border-red-500 text-red-500 hover:bg-red-500/20 text-sm disabled:opacity-50">
+        <button onClick={handleDelete} disabled={loading} className="px-2 py-1 rounded-[2px] border border-[#C42F35] text-[#ff6b6b] hover:bg-[#C42F35]/20 text-sm disabled:opacity-50">
             {loading ? "..." : "Delete"}
         </button>
     );
