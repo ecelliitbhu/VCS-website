@@ -1,8 +1,7 @@
 import { auth } from "@/auth";
-import { createClient } from "@supabase/supabase-js";
+import { supabase, vcsDb } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 export async function DELETE(req: NextRequest) {
     const session = await auth();
@@ -19,10 +18,11 @@ export async function DELETE(req: NextRequest) {
     // prevent admin from deleting themselves
     if (user_email === session.user.email) return NextResponse.json({ error: "cannot delete yourself" }, { status: 400 });
 
-    // delete user's registrations first
-    await supabase.from("registrations").delete().eq("user_email", user_email);
+    // delete user's enrollments (assessment_scores cascade) across all cohorts
+    await vcsDb.from("enrollments").delete().eq("user_email", user_email);
 
-    // delete user's scores
+    // legacy 2025 tables
+    await supabase.from("registrations").delete().eq("user_email", user_email);
     await supabase.from("scores").delete().eq("user_email", user_email);
 
     // delete user

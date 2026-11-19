@@ -1,56 +1,39 @@
-import { createClient } from "@supabase/supabase-js";
+import { auth } from "@/auth";
+import { getActiveCohort, getEnrollment } from "@/lib/cohort";
 import { NextRequest, NextResponse } from "next/server";
-import { isSignupCurrent } from "@/lib/signup";
 
 interface Params {
   id: string;
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-// GET: which course the user is registered in + their profile data
+// GET: the signed-in user's enrollment (profile) in the active cohort.
+// `id` is the email; users may only read their own record.
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<Params> }
 ): Promise<NextResponse> {
   const { id } = await params;
+  const email = decodeURIComponent(id);
 
-  // id is email in this route; look up user profile data
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .select("full_name, institution, current_year, course, branch, phone_number, signup_version")
-    .eq("email", id)
-    .maybeSingle();
+  const session = await auth();
+  if (!session?.user?.email)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (session.user.email !== email && (session.user as any).role !== "admin")
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
-  if (userError && userError.code !== "PGRST116") {
-    return NextResponse.json({ error: userError.message }, { status: 500 });
-  }
+  const cohort = await getActiveCohort();
+  const enrollment = cohort ? await getEnrollment(email, cohort.id) : null;
 
-  // Look up registration data
-  const { data: registrationData, error: regError } = await supabase
-    .from("registrations")
-    .select("course_id")
-    .eq("user_email", id)
-    .maybeSingle();
-
-  if (regError && regError.code !== "PGRST116") {
-    return NextResponse.json({ error: regError.message }, { status: 500 });
-  }
-
-  // Combine both pieces of data
   return NextResponse.json({
-    full_name: userData?.full_name ?? null,
-    institution: userData?.institution ?? null,
-    current_year: userData?.current_year ?? null,
-    course: userData?.course ?? null,
-    branch: userData?.branch ?? null,
-    phone_number: userData?.phone_number ?? null,
-    registered_course_id: registrationData?.course_id ?? null,
-    signup_version: userData?.signup_version ?? 0,
-    needs_signup:
-      !registrationData?.course_id || !isSignupCurrent(userData?.signup_version),
+    full_name: enrollment?.full_name ?? null,
+    institution: enrollment?.institution ?? null,
+    current_year: enrollment?.current_year ?? null,
+    course: enrollment?.course ?? null,
+    branch: enrollment?.branch ?? null,
+    phone_number: enrollment?.phone_number ?? null,
+    track: enrollment?.track ?? null,
+    cohort_id: cohort?.id ?? null,
+    registered_course_id: enrollment ? cohort!.id : null,
+    needs_signup: !enrollment,
   });
 }

@@ -1,12 +1,10 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
+import { getActiveCohort } from "@/lib/cohort";
 
-// Supabase client
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Re-exported so existing `import { supabase } from "@/auth"` keeps working.
+export { supabase };
 
 export const { signIn, signOut, auth, handlers } = NextAuth({
   providers: [
@@ -22,8 +20,9 @@ export const { signIn, signOut, auth, handlers } = NextAuth({
     async signIn({ user, account }) {
       if (!user?.email) return false;
 
-      // 🔒 REGISTRATION SWITCH
-      const REGISTRATION_OPEN = false;
+      // 🔒 REGISTRATION SWITCH: controlled by cohorts.registration_open in the DB
+      const cohort = await getActiveCohort();
+      const REGISTRATION_OPEN = !!cohort?.registration_open;
 
       // Check if user already exists
       const { data: existingUser, error } = await supabase
