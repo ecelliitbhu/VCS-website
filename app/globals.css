@@ -2,356 +2,548 @@
 @tailwind components;
 @tailwind utilities;
 
-/* E-Summit '27 - Brand CSS Variables */
+/* ==========================================================================
+   VC Scout 2026 — "Signal & Horizon"
+   Deep-navy canvas, ember light rising from the horizon. Orange is the single
+   action colour; crimson only appears in glows and the signature gradient.
+   ========================================================================== */
 :root {
-    --background: #0a0f14;
-    --foreground: #e8edf2;
-    --overlay: rgba(19, 50, 79, 0.35);
-    --font-sans: "Inter", sans-serif;
-    --font-mono: "Fira Code", monospace;
+    --ink: #091522;
+    --night: #0D2136;
+    --navy: #13324F;
+    --orange: #F86531;
+    --crimson: #C42F35;
+    --ember: #ff8a5c;
+    --text: #F8FAFC;
+    --text-dim: #94A3B8;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --signature: linear-gradient(135deg, #F86531 0%, #C42F35 50%, #13324F 100%);
 
-    /* Brand palette */
-    --brand-orange: #F86531;
-    --brand-crimson: #C42F35;
-    --brand-navy: #13324F;
+    --font-display: var(--font-bricolage), system-ui, sans-serif;
+    --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+    --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-    /* Gradient shorthand (orange -> crimson -> navy) */
-    --brand-gradient: linear-gradient(135deg, #F86531 0%, #C42F35 55%, #13324F 100%);
-    --brand-gradient-r: linear-gradient(to right, #F86531, #C42F35);
-    --brand-gradient-b: linear-gradient(to bottom, #F86531 0%, #C42F35 45%, #13324F 100%);
+    /* legacy aliases */
+    --brand-orange: var(--orange);
+    --brand-crimson: var(--crimson);
+    --brand-navy: var(--navy);
+    --brand-gradient: var(--signature);
 }
 
-/* Tailwind Theme Configuration */
-@theme {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-sans);
-    --font-mono: var(--font-mono);
-    --color-brand-orange: var(--brand-orange);
-    --color-brand-crimson: var(--brand-crimson);
-    --color-brand-navy: var(--brand-navy);
-}
-
-/* Smooth Scrolling */
 html {
     scroll-behavior: smooth;
-    background-color: #10283d;
+    background-color: var(--ink);
+    min-height: 100%;
 }
 
-/* Layout Structure for Footer Positioning */
 html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-}
-
-html {
-    min-height: 100%;
-}
-
-body {
-    height: auto;
-}
-
-#__next {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-main {
-    flex: 1;
-}
-
-/* Keep the E-Summit artwork behind every page, including the main landing page. */
-body {
-    isolation: isolate;
-    background: #10283d;
-    position: relative;
-    min-height: 100vh;
-}
-
-.site-background {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-        linear-gradient(180deg,
-            rgba(18, 30, 43, 0.38) 0%,
-            rgba(19, 50, 79, 0.24) 48%,
-            rgba(10, 26, 42, 0.62) 100%),
-        url("/dawn-sunset.jpg") center 52% / cover no-repeat;
-}
-
-body > * {
-    position: relative;
-    z-index: 1;
-}
-
-body > .site-background {
-    position: fixed;
-    z-index: 0;
-}
-
-@keyframes summit-ambient-drift {
-    from {
-        transform: translate3d(-1.5%, -0.75%, 0) scale(1);
-    }
-
-    to {
-        transform: translate3d(1.5%, 0.75%, 0) scale(1.04);
-    }
-}
-
-/* Hide Scrollbars */
-::-webkit-scrollbar {
-    display: none;
-}
-
-html, body {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-    }
+::-webkit-scrollbar { display: none; }
 
-    *,
-    *::before,
-    *::after {
+body {
+    isolation: isolate;
+    position: relative;
+    min-height: 100vh;
+    background: var(--ink);
+    color: var(--text);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+}
+
+body > * { position: relative; z-index: 1; }
+body > .scout-bg { position: fixed; z-index: 0; }
+
+main { flex: 1; }
+
+*:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 3px;
+}
+
+::selection { background: var(--orange); color: #fff; }
+
+a { transition: color 0.2s ease; }
+
+/* ==========================================================================
+   Ambient background  (components/scout-background.tsx)
+   base gradient -> rising aurora -> dot grid -> contour lines -> grain
+   Only transform/opacity are animated, so it stays compositor-only.
+   ========================================================================== */
+.scout-bg {
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+    background: linear-gradient(180deg, #091522 0%, #0B1B2E 55%, #0D2136 100%);
+}
+
+.scout-bg__aurora {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 150vmax;
+    height: 90vmax;
+    margin-left: -75vmax;
+    border-radius: 50%;
+    will-change: transform, opacity;
+}
+.scout-bg__aurora--a {
+    background: radial-gradient(closest-side, rgba(248, 101, 49, 0.30), rgba(248, 101, 49, 0) 100%);
+    transform: translate3d(-12vmax, 62%, 0);
+    animation: scout-rise-a 22s ease-in-out infinite alternate;
+}
+.scout-bg__aurora--b {
+    background: radial-gradient(closest-side, rgba(196, 47, 53, 0.30), rgba(196, 47, 53, 0) 100%);
+    transform: translate3d(14vmax, 70%, 0);
+    animation: scout-rise-b 28s ease-in-out infinite alternate;
+}
+.scout-bg__aurora--c {
+    width: 90vmax; height: 60vmax; margin-left: -45vmax;
+    background: radial-gradient(closest-side, rgba(19, 50, 79, 0.9), rgba(19, 50, 79, 0) 100%);
+    transform: translate3d(0, 20%, 0);
+    animation: scout-rise-c 34s ease-in-out infinite alternate;
+}
+
+@keyframes scout-rise-a {
+    from { transform: translate3d(-12vmax, 62%, 0) scale(1);    opacity: 0.8; }
+    to   { transform: translate3d(8vmax, 52%, 0)   scale(1.12); opacity: 1; }
+}
+@keyframes scout-rise-b {
+    from { transform: translate3d(14vmax, 70%, 0) scale(1.05);  opacity: 0.7; }
+    to   { transform: translate3d(-8vmax, 60%, 0) scale(0.95);  opacity: 1; }
+}
+@keyframes scout-rise-c {
+    from { transform: translate3d(0, 20%, 0);   opacity: 0.8; }
+    to   { transform: translate3d(0, 8%, 0);    opacity: 1; }
+}
+
+.scout-bg__dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1.2px);
+    background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 0%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 0%, transparent 75%);
+}
+
+/* faint topographic / radar contours centred below the fold */
+.scout-bg__contours {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    width: 160vmax;
+    height: 160vmax;
+    margin: -80vmax 0 0 -80vmax;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle at center, transparent 0 46px, rgba(255, 255, 255, 0.05) 46px 47px);
+    -webkit-mask-image: radial-gradient(circle, transparent 0%, #000 35%, transparent 62%);
+    mask-image: radial-gradient(circle, transparent 0%, #000 35%, transparent 62%);
+    opacity: 0.7;
+}
+
+.scout-bg__grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ==========================================================================
+   Primitives
+   ========================================================================== */
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+/* mono label with a leading rule */
+.scout-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ember);
+}
+.scout-eyebrow--plain::before { display: none; }
+.scout-eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    background: var(--orange);
+    transform: rotate(45deg);
+}
+
+/* pill tag — e.g. PRE-EVENT • E-SUMMIT */
+.scout-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.38rem 0.85rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: rgba(19, 50, 79, 0.35);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.scout-heading {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+    color: var(--text);
+}
+
+/* signature gradient, reserved for one focal phrase per page */
+.scout-gradient-text,
+.gradient-text,
+.text-gradient {
+    background: linear-gradient(100deg, #ff9a62 0%, #F86531 45%, #C42F35 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.scout-rule {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(90deg, #F86531, #C42F35 40%, rgba(19, 50, 79, 0) 100%);
+    opacity: 0.8;
+}
+
+/* hairline surface; a lit top edge appears on hover */
+.scout-panel {
+    position: relative;
+    background: linear-gradient(180deg, rgba(19, 50, 79, 0.34), rgba(13, 33, 54, 0.5));
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+.scout-panel::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.scout-panel:hover { border-color: rgba(248, 101, 49, 0.55); background: linear-gradient(180deg, rgba(19, 50, 79, 0.45), rgba(13, 33, 54, 0.6)); }
+.scout-panel:hover::before { opacity: 1; }
+.scout-panel--static:hover { border-color: var(--line); background: linear-gradient(180deg, rgba(19, 50, 79, 0.34), rgba(13, 33, 54, 0.5)); }
+.scout-panel--static:hover::before { opacity: 0; }
+
+.scout-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+}
+
+.scout-numeral {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(248, 101, 49, 0.5);
+    letter-spacing: -0.05em;
+}
+
+/* nav / text links with an underline that draws in */
+.scout-link {
+    position: relative;
+    color: var(--text-dim);
+    font-size: 0.875rem;
+}
+.scout-link::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -4px;
+    height: 1px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+}
+.scout-link:hover, .scout-link[aria-current="page"] { color: var(--text); }
+.scout-link:hover::after, .scout-link[aria-current="page"]::after { transform: scaleX(1); }
+
+/* form controls */
+.scout-field {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    background: rgba(9, 21, 34, 0.7);
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.scout-field:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(248, 101, 49, 0.18);
+}
+
+/* marquee ticker */
+.scout-marquee {
+    overflow: hidden;
+    border-block: 1px solid var(--line);
+    background: rgba(9, 21, 34, 0.5);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.scout-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: scout-marquee 48s linear infinite;
+}
+.scout-marquee:hover .scout-marquee__track { animation-play-state: paused; }
+@keyframes scout-marquee { to { transform: translateX(-50%); } }
+
+/* entrance */
+@keyframes scout-rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.scout-rise { animation: scout-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.scout-rise-1 { animation-delay: 0.05s; }
+.scout-rise-2 { animation-delay: 0.15s; }
+.scout-rise-3 { animation-delay: 0.25s; }
+.scout-rise-4 { animation-delay: 0.35s; }
+
+.scout-live {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--orange);
+    animation: scout-pulse 2s ease-out infinite;
+}
+@keyframes scout-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(248, 101, 49, 0.6); }
+    100% { box-shadow: 0 0 0 9px rgba(248, 101, 49, 0); }
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ==========================================================================
+   Lesson content (rendered HTML from data/modules)
+   ========================================================================== */
+.lesson-material {
+    max-width: 68ch;
+    margin-inline: 0;
+    color: #cbd5e1;
+    font-size: 1.0625rem;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+/* section headings inside a lesson: quiet, with a short orange rule above */
+.lesson-material h4 {
+    position: relative;
+    margin: 3.25rem 0 1.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+    color: #F8FAFC;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+}
+.lesson-material h4::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 2.5rem;
+    height: 2px;
+    background: var(--orange);
+}
+/* a heading straight after another heading is a sub-heading: no second rule, tighter above */
+.lesson-material h4 + h4 {
+    margin-top: 1.75rem;
+    padding-top: 0;
+    border-top: 0;
+    font-size: 1.2rem;
+    color: #e2e8f0;
+}
+.lesson-material h4 + h4::before { display: none; }
+.lesson-material h4:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.lesson-material h4:first-child::before { display: none; }
+.lesson-material p { margin: 0 0 1.35rem; color: #cbd5e1; }
+.lesson-material strong { color: #fff; font-weight: 650; }
+.lesson-material em { color: #e2e8f0; }
+.lesson-material a {
+    color: var(--orange);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+.lesson-material a:hover { color: var(--ember); }
+.lesson-material ul { margin: 0.5rem 0 1.4rem; padding-left: 0; list-style: none; }
+.lesson-material li {
+    position: relative;
+    margin: 0.9rem 0;
+    padding-left: 1.5rem;
+    color: #cbd5e1;
+}
+.lesson-material li::before {
+    content: "";
+    position: absolute;
+    left: 0.2rem;
+    top: 0.78em;
+    width: 5px;
+    height: 5px;
+    background: var(--orange);
+    transform: rotate(45deg);
+}
+
+/* assignment box inside a lesson */
+.lesson-assignment {
+    margin: 3.5rem 0 0.5rem;
+    padding: 1.75rem 1.75rem 0.75rem;
+    border: 1px solid rgba(248, 101, 49, 0.4);
+    border-left: 3px solid var(--orange);
+    background:
+        radial-gradient(120% 90% at 0% 0%, rgba(248, 101, 49, 0.14), transparent 60%),
+        rgba(13, 33, 54, 0.55);
+    box-shadow: 0 0 40px rgba(248, 101, 49, 0.08);
+}
+.lesson-assignment__label {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0 0.9rem !important;
+    padding: 0.25rem 0.65rem;
+    background: var(--orange);
+    color: #fff !important;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+.lesson-assignment__submit-slot { margin: 1.5rem 0 1rem !important; padding-top: 1.25rem; border-top: 1px solid rgba(248, 101, 49, 0.25); }
+.lesson-material a.lesson-assignment__submit,
+.lesson-assignment__submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    height: 3rem;
+    padding: 0 1.6rem;
+    background: var(--orange);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.lesson-material a.lesson-assignment__submit:hover {
+    background: #ff7340;
+    color: #fff;
+    box-shadow: 0 0 28px rgba(248, 101, 49, 0.45);
+}
+.lesson-material a.lesson-assignment__submit:active { transform: scale(0.97); }
+.lesson-assignment__submit--pending {
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: not-allowed;
+}
+.lesson-material .lesson-assignment h4 {
+    margin: 1.4rem 0 0.7rem;
+    padding-top: 0;
+    border-top: 0;
+    font-size: 1.2rem;
+}
+.lesson-material .lesson-assignment h4::before { display: none; }
+.lesson-material .lesson-assignment > h4:first-of-type { margin-top: 0; font-size: 1.6rem; }
+
+@media (max-width: 640px) {
+    .lesson-assignment { padding: 1.25rem 1.1rem 0.5rem; }
+    .lesson-material { font-size: 1rem; line-height: 1.8; }
+    .lesson-material h4 { margin-top: 2.4rem; font-size: 1.25rem; }
+}
+
+/* ==========================================================================
+   Tailwind token mapping (shadcn-style) — retuned to the VC Scout night palette
+   ========================================================================== */
+@layer base {
+    :root {
+        --background: 210 60% 8%;
+        --foreground: 210 40% 98%;
+
+        --card: 210 62% 13%;
+        --card-foreground: 210 28% 93%;
+
+        --popover: 211 66% 9%;
+        --popover-foreground: 210 28% 93%;
+
+        --primary: 17 94% 58%;
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 358 61% 47%;
+        --secondary-foreground: 0 0% 100%;
+
+        --muted: 211 45% 16%;
+        --muted-foreground: 210 18% 68%;
+
+        --accent: 17 94% 58%;
+        --accent-foreground: 0 0% 100%;
+
+        --destructive: 0 72% 50%;
+        --destructive-foreground: 0 0% 98%;
+
+        --border: 210 30% 22%;
+        --input: 210 30% 20%;
+        --ring: 17 94% 58%;
+
+        --radius: 0.25rem;
+    }
+}
+
+@layer base {
+    * { @apply border-border; }
+    body { @apply antialiased; }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); @apply font-bold; }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
         scroll-behavior: auto !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-
-    body::before {
-        animation: none;
-    }
-}
-
-*:focus-visible {
-    outline: 2px solid #fdba74;
-    outline-offset: 3px;
-}
-
-.lesson-material {
-    max-width: 88ch;
-    margin-inline: 0;
-    color: #e2e8f0;
-    font-size: 1.0625rem;
-    line-height: 1.85;
-    overflow-wrap: anywhere;
-}
-
-.lesson-material h4 {
-    margin: 1.6rem 0 0.55rem;
-    color: #ffcfad;
-    font-size: 1.125rem;
-    font-weight: 700;
-    line-height: 1.45;
-    letter-spacing: -0.015em;
-}
-
-.lesson-material h4:first-child {
-    margin-top: 0;
-}
-
-.lesson-material p {
-    margin: 0 0 0.85rem;
-    color: #e6edf5;
-}
-
-.lesson-material strong {
-    color: #fff;
-    font-weight: 650;
-}
-
-.lesson-material ul {
-    margin: 0.4rem 0 1rem;
-    padding-left: 1.35rem;
-    list-style: disc;
-}
-
-.lesson-material li {
-    margin: 0.35rem 0;
-    padding-left: 0.35rem;
-    color: #e6edf5;
-}
-
-.lesson-material li::marker {
-    color: #fda779;
-}
-
-@media (max-width: 640px) {
-    .lesson-material {
-        font-size: 1rem;
-        line-height: 1.8;
-    }
-
-    .lesson-material h4 {
-        margin-top: 1.6rem;
-        font-size: 1.1rem;
-    }
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: transparent;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-/* Link Styles */
-a {
-    color: var(--foreground);
-    transition: color 0.2s ease;
-}
-
-/* Tailwind Base Layer - E-Summit '27 token mapping */
-@layer base {
-    :root {
-        /* Deep navy base */
-        --background: 210 62% 18%;       /* #13324F equivalent in HSL */
-        --foreground: 210 20% 92%;
-
-        --card: 210 58% 14%;
-        --card-foreground: 210 20% 92%;
-
-        --popover: 210 60% 12%;
-        --popover-foreground: 210 20% 92%;
-
-        /* Primary = brand orange */
-        --primary: 19 93% 58%;            /* #F86531 in HSL */
-        --primary-foreground: 0 0% 100%;
-
-        /* Secondary = brand crimson */
-        --secondary: 358 62% 46%;         /* #C42F35 in HSL */
-        --secondary-foreground: 0 0% 100%;
-
-        --muted: 210 40% 22%;
-        --muted-foreground: 210 15% 60%;
-
-        /* Accent = brand orange */
-        --accent: 19 93% 58%;
-        --accent-foreground: 0 0% 100%;
-
-        --destructive: 0 84% 60%;
-        --destructive-foreground: 0 0% 98%;
-
-        --border: 210 40% 25%;
-        --input: 210 40% 20%;
-        --ring: 19 93% 58%;
-
-        --radius: 1rem;
-
-        --sidebar-background: 210 60% 12%;
-        --sidebar-foreground: 210 20% 92%;
-        --sidebar-primary: 19 93% 58%;
-        --sidebar-primary-foreground: 0 0% 100%;
-        --sidebar-accent: 210 40% 18%;
-        --sidebar-accent-foreground: 210 20% 92%;
-        --sidebar-border: 210 40% 25%;
-        --sidebar-ring: 19 93% 58%;
-    }
-
-    .dark {
-        --background: 210 62% 18%;
-        --foreground: 210 20% 92%;
-
-        --card: 210 58% 14%;
-        --card-foreground: 210 20% 92%;
-
-        --popover: 210 60% 12%;
-        --popover-foreground: 210 20% 92%;
-
-        --primary: 19 93% 58%;
-        --primary-foreground: 0 0% 100%;
-
-        --secondary: 358 62% 46%;
-        --secondary-foreground: 0 0% 100%;
-
-        --muted: 210 40% 22%;
-        --muted-foreground: 210 15% 60%;
-
-        --accent: 19 93% 58%;
-        --accent-foreground: 0 0% 100%;
-
-        --destructive: 0 62% 30%;
-        --destructive-foreground: 0 0% 98%;
-
-        --border: 210 40% 25%;
-        --input: 210 40% 20%;
-        --ring: 19 93% 58%;
-
-        --sidebar-background: 210 60% 12%;
-        --sidebar-foreground: 210 20% 92%;
-        --sidebar-primary: 19 93% 58%;
-        --sidebar-primary-foreground: 0 0% 100%;
-        --sidebar-accent: 210 40% 18%;
-        --sidebar-accent-foreground: 210 20% 92%;
-        --sidebar-border: 210 40% 25%;
-        --sidebar-ring: 19 93% 58%;
-    }
-}
-
-@layer base {
-    * {
-        @apply border-border;
-    }
-
-    body {
-        @apply text-foreground antialiased;
-        min-height: 100vh;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-bold;
-    }
-}
-
-/* Utility Classes */
-@layer utilities {
-    /* Radial ambient glow using brand orange */
-    .gradient-radial {
-        background: radial-gradient(circle at 20% 50%, rgba(248, 101, 49, 0.15), transparent 50%);
-    }
-
-    /* Hero gradient text: orange -> crimson */
-    .gradient-text {
-        background: linear-gradient(135deg, #FFD6A0 0%, #FFA6AC 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    /* Full brand sweep: orange -> crimson -> navy */
-    .text-gradient {
-        background: linear-gradient(135deg, #F86531 0%, #C42F35 55%, #13324F 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .animate-float {
-        animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0px);
-        }
-        50% {
-            transform: translateY(-20px);
-        }
-    }
+    .scout-marquee__track { animation: none; }
+    .scout-bg__aurora { animation: none; }
 }

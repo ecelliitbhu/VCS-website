@@ -38,7 +38,7 @@ export default function RoleToggle({ email, currentRole }: Props) {
     };
 
     return (
-        <button onClick={toggle} disabled={loading} className="px-2 py-1 rounded border text-sm hover:bg-white/10">
+        <button onClick={toggle} disabled={loading} className="px-2 py-1 rounded-[2px] border border-white/[0.16] text-sm text-[#94A3B8] hover:border-[#F86531] hover:text-[#F86531]">
             {loading ? "..." : role === "admin" ? "Demote" : "Promote"}
         </button>
     );

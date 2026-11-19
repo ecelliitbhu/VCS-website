@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface ExistingData {
   full_name?: string;
@@ -12,7 +13,6 @@ interface ExistingData {
   branch?: string;
   phone_number?: string;
   registered_course_id?: string;
-  needs_signup?: boolean;
 }
 
 interface RegisterFormPageProps {
@@ -21,8 +21,6 @@ interface RegisterFormPageProps {
 
 export default function RegisterFormPage({ existingData }: RegisterFormPageProps) {
   const isEditing = !!existingData?.registered_course_id;
-  // Registered earlier, but on an older version of the signup form
-  const needsReconfirm = isEditing && !!existingData?.needs_signup;
 
   const [formData, setFormData] = useState({
     full_name: existingData?.full_name || "",
@@ -73,7 +71,6 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
       full_name: formData.full_name,
       institution: formData.institution,
       phone_number: formData.phone_number,
-      course_id: "vc-course-iit-bhu-2025",
       current_year:
         formData.current_year === "Other"
           ? formData.current_year_other
@@ -136,8 +133,12 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 hero-background">
-      <div className="max-w-md w-full bg-card/80 backdrop-blur-md border border-border rounded-lg p-8 shadow-lg">
+    <div className="min-h-screen flex items-start justify-center px-4 pb-14 pt-8 md:pt-10">
+      <div
+        className={`scout-panel scout-panel--static w-full p-6 text-[#F8FAFC] sm:p-10 ${
+          isSuccess ? "max-w-md" : "max-w-4xl"
+        }`}
+      >
         {isSuccess ? (
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">
@@ -154,40 +155,33 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                   updates and course materials.
                 </p>
                 <a
-                  href="https://chat.whatsapp.com/FKpfFAEdb001JPVIeDh1J0?mode=wwt"
+                  href="https://chat.whatsapp.com/Fs0mgKCDPwYKsgSH9bLlIE?mode=gi_t"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={handleWhatsAppClick}
+                  className="inline-flex h-12 items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-7 text-sm font-semibold text-[#06281a] shadow-[0_0_28px_rgba(37,211,102,0.3)] transition-all duration-200 hover:bg-[#3ee27a] hover:shadow-[0_0_36px_rgba(37,211,102,0.5)] active:scale-[0.97] w-full"
                 >
-                  <Button className="w-full bg-green-500 hover:bg-green-600 text-white">
-                    Join Now (WhatsApp)
-                  </Button>
+                  <FaWhatsapp className="h-5 w-5" />
+                  Join Now (WhatsApp)
                 </a>
               </>
             )}
           </div>
         ) : (
           <>
-            <h1 className="text-3xl text-cyan-200 font-bold mb-6 text-center pb-2">
+            <h1 className="scout-heading text-3xl mb-6 text-left pb-2">
               {isEditing ? "Update Profile" : "Course Registration"}
             </h1>
 
-            {needsReconfirm && (
-              <div className="mb-4 p-3 border border-cyan-500/40 bg-cyan-500/10 text-cyan-100 rounded text-sm">
-                We&apos;ve updated our signup form. Please review your details
-                and submit to continue to the course.
-              </div>
-            )}
-
             {errors && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              <div className="mb-4 p-3 border border-[#C42F35] bg-[#C42F35]/10 text-[#ff9a9a] rounded-[2px] text-sm">
                 {errors}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="grid gap-x-6 gap-y-5 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                   Full Name *
                 </label>
                 <input
@@ -197,12 +191,12 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                   placeholder="Enter your full name"
                   value={formData.full_name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded bg-background"
+                  className="scout-field"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                   Institution *
                 </label>
                 <input
@@ -212,12 +206,12 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                   placeholder="Enter your institute"
                   value={formData.institution}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded bg-background"
+                  className="scout-field"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                   Current Year *
                 </label>
                 <select
@@ -225,7 +219,7 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                   required
                   value={formData.current_year}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded bg-background"
+                  className="scout-field"
                 >
                   <option value="" disabled>
                     Select Year
@@ -256,7 +250,7 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
 
               {formData.current_year === "Other" && (
                 <div>
-                  <label className="block text-sm font-medium mb-1">
+                  <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                     Please Specify Year *
                   </label>
                   <input
@@ -265,14 +259,14 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                     required
                     value={formData.current_year_other}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-border rounded bg-background"
+                    className="scout-field"
                     placeholder="e.g., Alumni, Pre-University"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                   Course *
                 </label>
                 <select
@@ -280,7 +274,7 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                   required
                   value={formData.course}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded bg-background"
+                  className="scout-field"
                 >
                   <option value="" disabled>
                     Select Course
@@ -326,7 +320,7 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
 
               {formData.course === "Other" && (
                 <div>
-                  <label className="block text-sm font-medium mb-1">
+                  <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                     Please Specify Course *
                   </label>
                   <input
@@ -335,14 +329,14 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                     required
                     value={formData.course_other}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-border rounded bg-background"
+                    className="scout-field"
                     placeholder="e.g., BBA, BCA"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                   Branch *
                 </label>
                 <select
@@ -350,7 +344,7 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                   required
                   value={formData.branch}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded bg-background"
+                  className="scout-field"
                 >
                   <option value="" disabled>
                     Select Branch
@@ -426,7 +420,7 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
 
               {formData.branch === "Other" && (
                 <div>
-                  <label className="block text-sm font-medium mb-1">
+                  <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                     Please Specify Branch *
                   </label>
                   <input
@@ -435,14 +429,14 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                     required
                     value={formData.branch_other}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-border rounded bg-background"
+                    className="scout-field"
                     placeholder="e.g., Data Science, AI & ML"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[#94A3B8] mb-1.5">
                   Phone Number (10 Digits) *
                 </label>
                 <input
@@ -455,17 +449,17 @@ export default function RegisterFormPage({ existingData }: RegisterFormPageProps
                   minLength={10}
                   maxLength={10}
                   pattern="[0-9]{10}"
-                  className="w-full px-3 py-2 border border-border rounded bg-background"
+                  className="scout-field"
                 />
               </div>
 
-              <div className="flex justify-center w-full pt-3">
+              <div className="flex w-full justify-start pt-2 md:col-span-2">
                 <Button
                   type="submit"
                   disabled={submitting}
                   variant="default"
                   size="lg"
-                  className="w-full max-w-sm"
+                  className="w-full sm:w-auto sm:min-w-[16rem]"
                 >
                   {submitting 
                     ? (isEditing ? "Updating..." : "Registering...") 

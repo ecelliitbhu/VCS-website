@@ -4,11 +4,11 @@ import { useState } from "react";
 
 type Props = {
     userEmail: string;
-    week: number;
+    assessmentId: string;
     initialScore?: number | null;
 };
 
-export default function ScoreEditor({ userEmail, week, initialScore }: Props) {
+export default function ScoreEditor({ userEmail, assessmentId, initialScore }: Props) {
     const [score, setScore] = useState<number | "">(initialScore ?? "");
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -20,7 +20,7 @@ export default function ScoreEditor({ userEmail, week, initialScore }: Props) {
                 method: "POST",
                 credentials: "same-origin",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_email: userEmail, week, score: score === "" ? null : Number(score) }),
+                body: JSON.stringify({ user_email: userEmail, assessment_id: assessmentId, score: score === "" ? null : Number(score) }),
             });
             const j = await res.json();
             if (!res.ok) {
@@ -40,8 +40,8 @@ export default function ScoreEditor({ userEmail, week, initialScore }: Props) {
 
     return (
         <div className="flex items-center gap-2">
-            <input type="number" value={score as any} onChange={(e) => setScore(e.target.value === "" ? "" : Number(e.target.value))} className="w-24 input text-white bg-transparent outline-none" placeholder="score" />
-            <button type="button" onClick={save} disabled={saving} className="px-2 py-1 rounded bg-orange-400 text-xs text-white">
+            <input type="number" value={score as any} onChange={(e) => setScore(e.target.value === "" ? "" : Number(e.target.value))} className="scout-field w-24 py-1" placeholder="score" />
+            <button type="button" onClick={save} disabled={saving} className="px-2 py-1 rounded-[2px] bg-[#F86531] hover:bg-[#ff7340] text-xs font-semibold text-white">
                 {saving ? "Saving..." : saved ? "Saved" : "Save"}
             </button>
         </div>

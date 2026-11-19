@@ -1,39 +1,7 @@
-import Link from "next/link";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { MdArrowOutward } from "react-icons/md";
 import { auth } from "@/auth";
 import { getUserStatus } from "@/lib/signup";
 import HomeClient from "./HomeClient";
-
-// const courses = [
-//   {
-//     id: 1,
-//     title: "Venture Capital 101",
-//     short: "Learn the fundamentals of VC.",
-//     duration: "8 Weeks",
-//   },
-//   {
-//     id: 2,
-//     title: "Startup Idea Validation",
-//     short: "How to know if your idea is a winner.",
-//     duration: "4 Weeks",
-//   },
-//   {
-//     id: 3,
-//     title: "Growth Hacking Basics",
-//     short: "Scale your startup fast.",
-//     duration: "6 Weeks",
-//   },
-// ];
 
 const partners = [
   {
@@ -86,127 +54,135 @@ const courseRoadmap = [
   },
 ];
 
+const reasons = [
+  "Learn from real VC investors",
+  "Master deal flow & due diligence",
+  "Build a strong VC-ready profile",
+];
+
 export default async function Home() {
   const session = await auth();
   const status = await getUserStatus(session?.user?.email);
 
+  // asymmetric bento: alternate wide / narrow cells on the 12-col grid
+  const spans = ["md:col-span-7", "md:col-span-5", "md:col-span-5", "md:col-span-7"];
+
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="min-h-[45vh] relative pt-10">
-        <div className="relative max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-10 space-y-8">
-          {/* Main Hero Content */}
-          <section className="grid items-start gap-10 md:grid-cols-2">
-            <div className="space-y-6">
-              <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
-                <span className="h-px w-8 bg-[#F86531]" />
-                E-Summit '27
-                <span className="text-white/50">·</span>
-                Dawn of the Defiant
-              </p>
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="block text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl font-extrabold text-white leading-[1.08] tracking-tight">
-                  Empowering
-                </span>
-                <span className="block text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl font-extrabold text-white leading-[1.08] tracking-tight">
-                  Venture Capitalists
-                </span>
-                <span className="block text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl font-extrabold text-white leading-[1.08] tracking-tight">
-                  of Tomorrow
-                </span>
-              </h1>
-              <p className="text-white/85 text-lg leading-relaxed max-w-md drop-shadow-sm">
-                VC Scout develops future VC talent with practical training and
-                real deal-flow exposure for career-ready investing skills.
-              </p>
+      {/* Hero */}
+      <section className="relative">
+        <div className="mx-auto grid max-w-6xl items-start gap-14 px-4 pb-16 pt-8 md:px-6 md:pb-24 md:pt-12 lg:grid-cols-[1.35fr_1fr]">
+          <div className="space-y-8">
+            <p className="scout-pill scout-rise scout-rise-1">
+              <span className="scout-live" />
+              Pre-event
+              <span className="text-white/25">&bull;</span>
+              E-Summit
+            </p>
 
-                <HomeClient status={status} />
+            <h1 className="scout-heading scout-rise scout-rise-2 text-[3rem] sm:text-6xl lg:text-[4.4rem]">
+              Empowering
+              <br />
+              <span className="scout-gradient-text">Venture Capitalists</span>
+              <br />
+              of Tomorrow
+            </h1>
+
+            <p className="scout-rise scout-rise-3 max-w-xl text-lg leading-relaxed text-[#94A3B8]">
+              VC Scout 2026 is a practical programme covering deal flow, due
+              diligence and term sheets, taught by practising investors.
+            </p>
+
+            <div className="scout-rise scout-rise-4">
+              <HomeClient status={status} />
             </div>
+          </div>
 
-            <div>
-              <Card className="rounded-2xl border border-orange-100/20 bg-gradient-to-br from-[#713f32]/75 via-[#573641]/70 to-[#29364a]/78 p-6 shadow-[0_12px_40px_rgba(36,20,22,0.25)] backdrop-blur-xl md:p-8">
-                <CardHeader className="p-0 mb-4">
-                  <CardTitle className="text-lg md:text-xl font-bold">
-                    Why VC Scout?
-                  </CardTitle>
-                </CardHeader>
-
-                <CardContent className="p-0">
-                  <ul className="space-y-3 text-gray-300">
-                    <li className="flex items-start gap-3">
-                      <span className="text-[#F86531] font-bold text-lg">•</span>
-                      <span>Learn from real VC investors</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-[#F86531] font-bold text-lg">•</span>
-                      <span>Master deal flow &amp; due diligence</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-[#F86531] font-bold text-lg">•</span>
-                      <span>Build a strong VC-ready profile</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
+          {/* Why list: open layout, no box */}
+          <aside className="scout-rise scout-rise-3 lg:pt-24">
+            <div className="mb-5 flex items-center justify-between font-mono text-[0.68rem] uppercase tracking-[0.2em] text-[#94A3B8]">
+              <span>Why VC Scout</span>
+              <span>VCS/26</span>
             </div>
-          </section>
+            <ul className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+              {reasons.map((reason, i) => (
+                <li key={reason} className="flex items-baseline gap-4 py-4">
+                  <span className="font-mono text-xs tabular-nums text-[#F86531]">0{i + 1}</span>
+                  <span className="text-[#F8FAFC]">{reason}</span>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
 
+        {/* Metrics strip */}
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <dl className="grid grid-cols-3 border-y border-white/[0.08]">
+            {[
+              ["04", "Modules"],
+              ["11", "Lesson days"],
+              ["01", "Final hackathon"],
+            ].map(([n, label], i) => (
+              <div
+                key={label}
+                className={`px-2 py-6 sm:px-6 ${i > 0 ? "border-l border-white/[0.08]" : ""}`}
+              >
+                <dt className="font-display text-4xl font-extrabold tracking-tight text-[#F8FAFC] sm:text-5xl">{n}</dt>
+                <dd className="mt-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[#94A3B8] sm:text-[0.68rem]">
+                  {label}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
+      {/* Roadmap */}
       <section
         aria-labelledby="course-roadmap-heading"
-        className="mx-auto w-full max-w-6xl px-4 pt-10 pb-6 md:px-6 md:pt-16 md:pb-8"
+        className="mx-auto w-full max-w-6xl px-4 pb-8 pt-20 md:px-6 md:pt-24"
       >
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-white/15 pb-5">
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-orange-200">
-              The learning path
-            </p>
-            <h2
-              id="course-roadmap-heading"
-              className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
-            >
-              Built in four stages.
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
+          <div className="space-y-4">
+            <p className="scout-eyebrow">The learning path</p>
+            <h2 id="course-roadmap-heading" className="scout-heading text-4xl sm:text-5xl">
+              Course roadmap
             </h2>
           </div>
-          <p className="text-sm text-white/70">11 lesson days <span className="px-1 text-orange-300">/</span> 4 modules</p>
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#94A3B8]">
+            11 lesson days <span className="px-1 text-[#F86531]">/</span> 4 modules
+          </p>
         </div>
 
-        <ol className="grid gap-5 md:grid-cols-2">
-          {courseRoadmap.map((module) => (
-            <li
-              key={module.module}
-              className="relative overflow-hidden rounded-2xl border border-orange-100/25 bg-gradient-to-br from-[#713f32]/80 via-[#573641]/78 to-[#29364a]/82 p-5 shadow-[0_16px_40px_rgba(36,20,22,0.28)] backdrop-blur-xl sm:p-6"
-            >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-orange-300/80 via-rose-300/45 to-transparent" />
-              <div className="mb-4 flex items-start gap-4">
-                <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full border border-orange-200/25 bg-orange-300/10 px-2 font-mono text-xs font-semibold tracking-wider text-orange-100">
-                  {module.module}
-                </span>
+        <ol className="grid gap-4 md:grid-cols-12">
+          {courseRoadmap.map((module, idx) => (
+            <li key={module.module} className={`scout-panel p-6 sm:p-8 ${spans[idx]}`}>
+              <div className="mb-8 flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-semibold leading-snug text-white sm:text-xl">
+                  <p className="mb-3 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-[#F86531]">
+                    Stage {module.module}
+                    <span className="px-2 text-white/25">/</span>
+                    <span className="text-[#94A3B8]">
+                      {module.days.length} {module.days.length === 1 ? "day" : "days"}
+                    </span>
+                  </p>
+                  <h3 className="font-display text-xl font-bold leading-tight tracking-tight text-[#F8FAFC] sm:text-2xl">
                     {module.title}
                   </h3>
-                  <p className="mt-1 text-xs uppercase tracking-[0.12em] text-white/45">
-                    {module.days.length} lesson {module.days.length === 1 ? "day" : "days"}
-                  </p>
                 </div>
+                <span className="scout-numeral text-6xl sm:text-7xl" aria-hidden="true">{module.module}</span>
               </div>
 
-              <ol className="ml-1 border-l border-white/10">
+              <ol className="border-t border-white/[0.08]">
                 {module.days.map((lesson) => (
                   <li
                     key={lesson.day}
-                    className="relative flex gap-3 py-2.5 pl-4 first:pt-1 last:pb-0"
+                    className="flex gap-4 border-b border-white/[0.06] py-3 last:border-b-0"
                   >
-                    <span className="absolute -left-[3px] top-[1.05rem] h-1.5 w-1.5 rounded-full bg-[#F86531]" />
-                    <span className="w-10 shrink-0 text-xs font-semibold tabular-nums text-orange-200/80">
-                      D{lesson.day}
+                    <span className="w-9 shrink-0 font-mono text-xs font-medium tabular-nums text-[#F86531]">
+                      D{String(lesson.day).padStart(2, "0")}
                     </span>
-                    <span className="text-sm leading-relaxed text-white/80">
-                      {lesson.topic}
-                    </span>
+                    <span className="text-sm leading-relaxed text-[#CBD5E1]">{lesson.topic}</span>
                   </li>
                 ))}
               </ol>
@@ -215,47 +191,33 @@ export default async function Home() {
         </ol>
       </section>
 
-      {/* Partners Section */}
-      <section className="mx-auto max-w-6xl px-4 pt-2 pb-24 md:px-6 md:pt-4 md:pb-28">
-        <div className="mb-8 flex items-end justify-between gap-4 border-b border-white/20 pb-5">
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-orange-200">
-              In good company
-            </p>
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Our Partners
-            </h2>
+      {/* Partners */}
+      <section className="mx-auto w-full max-w-6xl px-4 pb-24 pt-20 md:px-6 md:pt-28">
+        <div className="grid items-center gap-8 border-t border-white/[0.08] pt-12 md:grid-cols-[1fr_2fr]">
+          <div className="space-y-3">
+            <p className="scout-eyebrow">Partners</p>
+            <h2 className="scout-heading text-3xl sm:text-4xl">Our partners</h2>
           </div>
-        </div>
 
-        <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-          {partners.map((partner) => (
-            <Card
-              key={partner.id}
-              className="group flex min-h-36 items-center gap-5 rounded-2xl border-white/20 bg-[#10283d]/60 p-5 shadow-[0_16px_40px_rgba(7,18,31,0.2)] backdrop-blur-xl transition-colors hover:border-orange-200/40 hover:bg-[#10283d]/75 sm:gap-7 sm:p-6"
-            >
-              <CardContent className="flex w-full items-center gap-5 p-0 sm:gap-7">
-                <div className="flex h-20 w-36 shrink-0 items-center justify-center rounded-xl border border-orange-100/60 bg-[#ead3b7] px-4 py-3 shadow-inner shadow-[#713f32]/10 sm:h-24 sm:w-44 sm:px-5">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {partners.map((partner) => (
+              <div key={partner.id} className="scout-panel group flex items-center gap-5 p-4">
+                <div className="flex h-16 w-28 shrink-0 items-center justify-center rounded-[2px] bg-[#F8FAFC] px-3 py-2">
                   <Image
                     src={`/${partner.logo}`}
                     alt={`${partner.name} logo`}
                     width={180}
                     height={76}
-                    className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.04]"
+                    className="h-full w-full object-contain"
                   />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-200/80">
-                    E-Summit &apos;27
-                  </p>
-                  <h3 className="mt-1 text-xl font-semibold text-white sm:text-2xl">
-                    {partner.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-slate-300/80">Our partner</p>
+                  <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-[#94A3B8]">Partner</p>
+                  <h3 className="font-display mt-1 text-xl font-bold text-[#F8FAFC]">{partner.name}</h3>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>

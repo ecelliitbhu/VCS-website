@@ -109,7 +109,18 @@ export const renderFullLesson = (day: string, source: string) => {
     .filter((block) => block.length > 0);
   let contentStarted = lessonStartIndex !== -1;
   let skippingReadingList = false;
+  let inDeliverables = false;
+  let inAssignment = false;
+  let assignmentKey = "module";
   const content: string[] = [];
+  // Closes the assignment box with a slot where the page puts its Submit button.
+  const closeAssignment = () => {
+    if (!inAssignment) return;
+    content.push(
+      `<p class="lesson-assignment__submit-slot" data-key="${assignmentKey}"></p></section>`
+    );
+    inAssignment = false;
+  };
 
   for (const block of lessonBlocks) {
     const lines = block.filter((line) => {
@@ -146,8 +157,20 @@ export const renderFullLesson = (day: string, source: string) => {
       }
     };
 
-    for (const line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const nextLine = lines[i + 1];
       const heading = line.replace(/^[●•▪◦○\u0000]\s*/, "");
+      // A short line followed by a lowercase line is a wrapped sentence, not a heading.
+      const openParens = (heading.match(/\(/g) ?? []).length;
+      const closeParens = (heading.match(/\)/g) ?? []).length;
+      const wrapsIntoNext =
+        // line cut off mid-sentence: trailing comma, open bracket, or dangling connector
+        /[,(]$/.test(heading) ||
+        openParens > closeParens ||
+        /\b(?:and|or|of|the|to|in|for|with|across)$/i.test(heading) ||
+        // next line continues it: lowercase start or "(TAM/SAM/SOM)"-style start
+        (!!nextLine && /^[a-z(]/.test(nextLine) && !isBullet(nextLine));
       if (/^Learning pathway for\b/i.test(heading)) {
         skippingReadingList = true;
         continue;
@@ -158,7 +181,64 @@ export const renderFullLesson = (day: string, source: string) => {
         skippingReadingList = false;
       }
 
-      if (isHeading(heading)) {
+      // Module 4 has no "Assignment" heading: its assignment is the "Final deliverable" line.
+      const finalDeliverable = line.match(/^Final deliverable\s*[—–-]\s*(Demo Day Analyst Pack)\s*:?\s*(.*)$/i);
+      if (finalDeliverable) {
+        flushParagraph();
+        flushList();
+        closeAssignment();
+        content.push(
+          `<section class="lesson-assignment" data-module-assignment><p class="lesson-assignment__label">Module Assignment</p><h4>${escapeHtml(finalDeliverable[1])}</h4>`
+        );
+        inAssignment = true;
+        assignmentKey = "module";
+        inDeliverables = false;
+        if (finalDeliverable[2]) paragraph.push(finalDeliverable[2]);
+        continue;
+      }
+
+      // Assignment sections are wrapped in a highlighted box (runs to the end of the lesson).
+      const assignmentMatch = heading
+        .replace(/^\u{1F4DD}\s*/u, "")
+        .match(
+          /^(?:((?:Day|Module)\s+\d+\s+Assignment)\s*:?\s*(.*)|(Assignment)|(The assignment)|Topic\s+\d+:\s*(Assignment Briefing.*))$/i
+        );
+      if (assignmentMatch) {
+        flushParagraph();
+        flushList();
+        closeAssignment();
+        const label = assignmentMatch[1] ?? "Assignment";
+        const title = assignmentMatch[1] ? assignmentMatch[2] : (assignmentMatch[5] ?? "");
+        content.push(
+          `<section class="lesson-assignment"${/^Day\s+\d+/i.test(label) ? "" : " data-module-assignment"}><p class="lesson-assignment__label">${escapeHtml(label)}</p>` +
+            (title ? `<h4>${escapeHtml(title)}</h4>` : "")
+        );
+        inAssignment = true;
+        assignmentKey = /^Day\s+\d+/i.test(label) ? `day-${label.match(/\d+/)![0]}` : "module";
+        inDeliverables = false;
+        continue;
+      }
+
+      // "Deliverables" is a heading, but the numbered items under it are plain text.
+      if (/^Deliverables?:?$/i.test(heading)) {
+        flushParagraph();
+        flushList();
+        content.push(`<h4>${escapeHtml(heading)}</h4>`);
+        inDeliverables = true;
+        continue;
+      }
+      if (inDeliverables && /^\d+[.)]\s+\S/.test(heading)) {
+        flushParagraph();
+        flushList();
+        paragraph.push(heading);
+        continue;
+      }
+
+      // A numbered line that ends with a full stop is a sentence (e.g. a flattened table row), not a title.
+      const isSentenceItem = /^\d+[.)]\s+\S/.test(heading) && /\.$/.test(heading);
+
+      if (isHeading(heading) && !wrapsIntoNext && !isSentenceItem) {
+        inDeliverables = false;
         flushParagraph();
         flushList();
         content.push(`<h4>${escapeHtml(heading)}</h4>`);
@@ -182,6 +262,8 @@ export const renderFullLesson = (day: string, source: string) => {
     flushParagraph();
     flushList();
   }
+
+  closeAssignment();
 
   return `<div class="lesson-material">${content.join("")}</div>`;
 };

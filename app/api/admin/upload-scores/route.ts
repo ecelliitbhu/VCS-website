@@ -1,12 +1,14 @@
 // app/api/admin/upload-scores/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth, supabase } from "@/auth";
+import { vcsDb } from "@/lib/supabase";
+import { getActiveCohort, getAssessments } from "@/lib/cohort";
 
-// Expected sheet headers: email | score | week
+// Expected sheet headers: email | assessment (key, e.g. m3-quiz) | score
 type SheetRow = {
   email: string;
+  assessment: string;
   score: string | number;
-  week: number | string;
 };
 
 export async function POST(req: NextRequest) {
@@ -44,46 +46,61 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
-  // Deduplicate by (email, week) and normalize score like "7 / 10" -> 7
-  const map = new Map<string, { user_email: string; week: number; score: number | null }>();
+  const cohort = await getActiveCohort();
+  if (!cohort) return NextResponse.json({ error: "No active cohort" }, { status: 409 });
+
+  const [{ data: enrollData }, assessments] = await Promise.all([
+    vcsDb.from("enrollments").select("id, user_email").eq("cohort_id", cohort.id),
+    getAssessments(cohort.id),
+  ]);
+  const enrollByEmail = new Map(
+    (enrollData ?? []).map((e: any) => [String(e.user_email).toLowerCase(), e.id as string])
+  );
+  const assessmentByKey = new Map(assessments.map((a) => [a.key, a.id]));
+
+  // Deduplicate by (enrollment, assessment) and normalize score like "7 / 10" -> 7
+  const map = new Map<string, any>();
+  const skipped: string[] = [];
 
   for (const r of rows) {
-    if (!r.email || r.week == null) continue;
+    if (!r.email || !r.assessment) continue;
+    const enrollmentId = enrollByEmail.get(String(r.email).trim().toLowerCase());
+    const assessmentId = assessmentByKey.get(String(r.assessment).trim());
+    if (!enrollmentId || !assessmentId) {
+      skipped.push(`${r.email}/${r.assessment}`);
+      continue;
+    }
 
-    const weekNum = Number(r.week);
-    if (Number.isNaN(weekNum)) continue;
+    const numericPart = String(r.score ?? "").trim().split("/")[0].trim();
+    const score =
+      numericPart === "" || Number.isNaN(Number(numericPart)) ? null : Number(numericPart);
 
-    const rawScore = String(r.score ?? "").trim();
-    const numericPart = rawScore.split("/")[0].trim();
-    const scoreNumber =
-      numericPart === "" || Number.isNaN(Number(numericPart))
-        ? null
-        : Number(numericPart);
-
-    const key = `${r.email}__${weekNum}`;
-    // later rows overwrite earlier ones for same email+week
-    map.set(key, {
-      user_email: r.email,
-      week: weekNum,
-      score: scoreNumber,
+    // later rows overwrite earlier ones for the same enrollment+assessment
+    map.set(`${enrollmentId}__${assessmentId}`, {
+      enrollment_id: enrollmentId,
+      assessment_id: assessmentId,
+      score,
+      graded_by: session.user.email,
+      updated_at: new Date().toISOString(),
     });
   }
 
   const payload = Array.from(map.values());
-
   if (payload.length === 0) {
-    return NextResponse.json({ error: "No valid rows" }, { status: 400 });
+    return NextResponse.json(
+      { error: "No valid rows (unknown email or assessment key?)", skipped },
+      { status: 400 }
+    );
   }
 
-  // Upsert on unique (user_email, week) constraint
-  const { error } = await supabase
-    .from("scores")
-    .upsert(payload, { onConflict: "user_email,week" });
+  const { error } = await vcsDb
+    .from("assessment_scores")
+    .upsert(payload, { onConflict: "enrollment_id,assessment_id" });
 
   if (error) {
     console.error("Scores upsert error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ updated: payload.length });
+  return NextResponse.json({ updated: payload.length, skipped });
 }
