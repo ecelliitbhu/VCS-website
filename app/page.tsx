@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { auth } from "@/auth";
 import { getUserStatus } from "@/lib/signup";
 import HomeClient from "./HomeClient";
@@ -96,6 +97,7 @@ export default async function Home() {
             <div className="scout-rise scout-rise-4">
               <HomeClient status={status} />
             </div>
+
           </div>
 
           {/* Why list: open layout, no box */}
@@ -134,6 +136,32 @@ export default async function Home() {
               </div>
             ))}
           </dl>
+        </div>
+
+        <div className="mx-auto max-w-6xl px-4 pt-10 md:px-6 md:pt-12">
+          <div className="relative flex flex-col gap-6 overflow-hidden border border-[#F86531]/40 bg-gradient-to-r from-[#F86531]/[0.16] via-[#F86531]/[0.07] to-[#132A3F]/90 p-6 shadow-[0_16px_48px_rgba(0,0,0,0.2)] backdrop-blur-md sm:p-8 md:flex-row md:items-center md:justify-between">
+            <div className="pointer-events-none absolute -right-12 -top-20 h-56 w-56 rounded-full bg-[#F86531]/15 blur-3xl" />
+            <div className="relative max-w-2xl">
+              <p className="mb-3 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#FDBA74]">
+                Opportunities for standout participants
+              </p>
+              <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-[#F8FAFC] sm:text-3xl">
+                Stand out in VC Scout.{" "}
+                <span className="text-[#FDBA74]">Get considered for VC internships.</span>
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#CBD5E1] sm:text-base">
+                Top participants may be considered for exciting internship
+                opportunities in the venture capital industry.
+              </p>
+            </div>
+            <Link
+              href="/course"
+              className="relative inline-flex shrink-0 items-center justify-center gap-2 border border-[#F86531] bg-[#F86531] px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-[#FF8258] hover:bg-[#FF8258] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDBA74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#101B2A]"
+            >
+              Explore VC Scout
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
         </div>
       </section>
 
